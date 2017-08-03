@@ -72,7 +72,7 @@ class Enemy(pygame.sprite.Sprite):
 		self.rect.topleft = init_pos
 		self.down_imgs = enemy_down_imgs
 		self.speed = 2
-		self.down_ index = 0
+		self.down_index = 0
 
 	def move(self):
 		self.rect.top += self.speed
@@ -103,9 +103,11 @@ player_rect.append(pygame.Rect(330,498,102,126))
 
 player_rect.append(pygame.Rect(432,624,102,126))
 
-post_pos = [200,600]
+player_pos = [200,600]
 
 player = Player(plane_img,player_rect,player_pos)
+
+#
 
 bullet_rect = pygame.Rect(1004,987,9,21)
 
@@ -118,7 +120,7 @@ enemy1_img = plane_img.subsurface(enemy1_rect)
 enemy1_down_imgs = []
 enemy1_down_imgs.append(plane_img.subsurface(pygame.Rect(267,347,57,43)))
 enemy1_down_imgs.append(plane_img.subsurface(pygame.Rect(873,697,57,43)))
-enemy1_down_imgs.append(plane_img.subsurface(pugame.Rect(267,296,57,43)))
+enemy1_down_imgs.append(plane_img.subsurface(pygame.Rect(267,296,57,43)))
 enemy1_down_imgs.append(plane_img.subsurface(pygame.Rect(930,697,57,43)))
 
 enemies1 = pygame.sprite.Group()
@@ -132,17 +134,17 @@ enemy_frequency = 0
 player_down_index = 16
 
 score = 0
+#
+clock = pygame.time.Clock()
 
-clock = pygame.time.clock()
-
-runing = True
+running = True
 
 #游戏主循环
 while running:
 
 	clock.tick(60)
 	if not player.is_hit:
-		if shoot_frequency % 15 ==0
+		if shoot_frequency % 15 == 0:
 			player.shoot(bullet_img)
 		shoot_frequency += 1
 
@@ -195,6 +197,69 @@ while running:
 			enemies_down.remove(enemy_down)
 			score += 1000
 			continue
+		screen.blit(enemy_down.down_imgs[enemy_down.down_index // 2],enemy_down.rect)
+		enemy_down.down_index += 1
 
+	#显示子弹
+	player.bullets.draw(screen)
+	#
+	enemies1.draw(screen)
+
+	#
+	score_font = pygame.font.Font(None,36)
+
+	score_text = score_font.render(str(score),True,(128,128,128))
+	
+	text_rect = score_text.get_rect()
+
+	text_rect.topleft = [10,10]
+	
+	screen.blit(score_text,text_rect)
+
+	#
+	pygame.display.update()
+	#
+	for event in pygame.event.get():
+		if event.type == pygame.QUIT:
+			pygame.quit()
+			exit()
+	#
+	
+	key_pressed = pygame.key.get_pressed()
+	
+	#
+	if key_pressed[K_w] or key_pressed[K_UP]:
+		player.moveUp()
+	if key_pressed[K_s] or key_pressed[K_DOWN]:
+		player.moveDown()
+	if key_pressed[K_a] or key_pressed[K_LEFT]:
+		player.moveLeft()
+	if key_pressed[K_d] or key_pressed[K_RIGHT]:
+		player.moveRight()
+#
+font = pygame.font.Font(None,48)
+
+text = font.render('Score:' + str(score),True,(255,0,0))
+
+text_rect = text.get_rect()
+
+text_rect.centerx = screen.get_rect().centerx
+
+text_rect.centery = screen.get_rect().centery + 24
+
+screen.blit(game_over,(0,0))
+
+screen.blit(text,text_rect)
+
+#
+while 1:
+	
+	for event in pygame.event.get():
+		if event.type == pygame.QUIT:
+			pygame.quit()
+			exit()
+	pygame.display.update()
+
+	
 
 
